@@ -1,0 +1,183 @@
+{
+    "interfaces": [
+        {
+            "addresses": [
+                {
+                    "cidr": null,
+                    "eui64": false,
+                    "origin": "dhcp",
+                    "type": "dynamic",
+                    "version": "v4"
+                }
+            ],
+            "identification": {
+                "id": "eth4.12",
+                "type": "vlan"
+            },
+            "ipv4": {
+                "cos": 0,
+                "dhcpOptions": [
+                    {
+                        "optionNumber": 60,
+                        "value": "iTV"
+                    }
+                ]
+            },
+            "ipv6": {
+                "cos": 0,
+                "dhcp6Options": [],
+                "dhcp6PDStatus": []
+            },
+            "status": {
+                "arpProxy": false,
+                "baseReachableTime": 30,
+                "comment": "WAN3",
+                "enabled": true,
+                "mtu": 1500,
+                "speed": "auto"
+            },
+            "vlan": {
+                "egressQoSMap": [],
+                "id": 12,
+                "ingressQoSMap": [],
+                "interface": {
+                    "id": "eth4"
+                }
+            }
+        }
+    ],
+    "firewall/nat": [
+        {
+            "chain": "POSTROUTING",
+            "enabled": true,
+            "id": 50,
+            "ipVersion": "v4only",
+            "log": false,
+            "negateInInterface": false,
+            "negateOutInterface": false,
+            "outInterface": {
+                "id": "eth4.12"
+            },
+            "source": {
+                "sets": []
+            },
+            "target": "MASQUERADE"
+        }
+    ],
+    "services": {
+        "wanFailover": {
+            "wanInterfaces": [
+                {
+                    "interface": "eth4.12",
+                    "metric": 231,
+                    "monitors": [
+                        {
+                            "id": 8,
+                            "interval": 60,
+                            "payloadSize": 1,
+                            "target": "127.0.0.1",
+                            "timePeriod": 86400,
+                            "type": "icmp"
+                        },
+                        {
+                            "alert": {
+                                "latencyThreshold": 1500,
+                                "lossThreshold": 50
+                            },
+                            "id": 9,
+                            "interval": 3,
+                            "payloadSize": 1,
+                            "target": "127.0.0.1",
+                            "timePeriod": 60,
+                            "type": "icmp"
+                        }
+                    ],
+                    "routingTable": 203,
+                    "weight": 10
+                }
+            ]
+        },
+        "igmpProxy": {
+            "downstreams": [
+                "br50"
+            ],
+            "enabled": true,
+            "igmp": "v3",
+            "mld": "disabled",
+            "upstream": {
+                "interface": "eth4.12"
+            }
+        }
+    },
+    "firewall/pbr": {
+        "rules": [
+            {
+                "destination": {
+                    "sets": [
+                        "!local_network"
+                    ]
+                },
+                "enabled": true,
+                "id": 11001,
+                "ipVersion": "v4only",
+                "negateInInterface": false,
+                "protocol": "all",
+                "routingMode": {
+                    "mode": "table",
+                    "pbrTable": 203,
+                    "strict": true
+                },
+                "source": {
+                    "sets": [
+                        "iptv_lan"
+                    ]
+                },
+                "trafficType": "forwarded",
+                "triggerTag": {
+                    "id": "67a9761e79cf906b9b62bf5b",
+                    "type": "TRAFFIC_ROUTE"
+                }
+            },
+            {
+                "destination": {
+                    "port": "53",
+                    "sets": [
+                        "local_network"
+                    ]
+                },
+                "enabled": true,
+                "id": 11002,
+                "ipVersion": "v4only",
+                "negateInInterface": false,
+                "protocol": "tcp_udp",
+                "routingMode": {
+                    "mode": "table",
+                    "pbrTable": 203,
+                    "strict": true
+                },
+                "source": {
+                    "sets": [
+                        "iptv_lan"
+                    ]
+                },
+                "trafficType": "forwarded",
+                "triggerTag": {
+                    "id": "67a9761e79cf906b9b62bf5b",
+                    "type": "TRAFFIC_ROUTE"
+                }
+            }
+        ]
+    },
+    "firewall/sets": [
+        {
+            "description": "IPTV LAN",
+            "entries": [
+                "192.168.50.0/24"
+            ],
+            "identification": {
+                "name": "iptv_lan",
+                "type": "address"
+            }
+        }
+    ]
+}

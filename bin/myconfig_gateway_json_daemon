@@ -1,0 +1,28 @@
+#!/bin/sh
+
+# 读取 keyword 文件并将其内容保存到 KEYWORD 变量
+KEYWORD=$(cat /data/myconfig_gateway_json/keyword)
+
+# 监控文件修改的时间戳
+LAST_MODIFIED_TIME=$(stat -c %Y /data/udapi-config/ubios-udapi-server/ubios-udapi-server.state)
+
+while true; do
+    # 检查文件的修改时间戳
+    CURRENT_MODIFIED_TIME=$(stat -c %Y /data/udapi-config/ubios-udapi-server/ubios-udapi-server.state)
+    
+    # 如果文件被修改
+    if [ "$LAST_MODIFIED_TIME" != "$CURRENT_MODIFIED_TIME" ]; then
+        # 读取文件内容并使用 grep 检查是否包含 KEYWORD
+        if ! grep -q "$KEYWORD" /data/udapi-config/ubios-udapi-server/ubios-udapi-server.state; then
+            # 如果没有找到 KEYWORD，则调用 myconfig_gateway_json
+            /data/myconfig_gateway_json/bin/myconfig_gateway_json
+            systemctl restart udapi-server.service 
+        fi
+
+        # 更新 LAST_MODIFIED_TIME
+        LAST_MODIFIED_TIME=$CURRENT_MODIFIED_TIME
+    fi
+    
+    # 每隔5秒检查一次
+    sleep 5
+done

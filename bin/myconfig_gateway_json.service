@@ -1,0 +1,11 @@
+[Unit]
+Description=Myconfig_gateway_json Daemon Service
+After=network.target
+
+[Service]
+ExecStart=/data/myconfig_gateway_json/bin/myconfig_gateway_json_daemon
+Restart=always
+User=root
+
+[Install]
+WantedBy=multi-user.target
