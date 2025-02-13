@@ -15,6 +15,7 @@ while true; do
         # 读取文件内容并使用 grep 检查是否包含 KEYWORD
         if ! grep -q "$KEYWORD" /data/udapi-config/ubios-udapi-server/ubios-udapi-server.state; then
             # 如果没有找到 KEYWORD，则调用 myconfig_gateway_json
+            echo "$(date '+%Y-%m-%d %H:%M:%S') - myconfig_gateway_json patched." >> /var/log/myconfig_gateway_json.log
             /data/myconfig_gateway_json/bin/myconfig_gateway_json
             systemctl restart udapi-server.service 
         fi
