@@ -11,10 +11,11 @@ echo "Downloading myconfig_gateway_json.service..."
 curl -L -o /data/myconfig_gateway_json/bin/myconfig_gateway_json.service https://raw.githubusercontent.com/benjaminlei2007/myconfig_gateway_json_service/refs/heads/main/bin/myconfig_gateway_json.service
 
 echo "Downloading myconfig_gateway_json_daemon..."
-curl -L -o /data/myconfig_gateway_json/bin/myconfig_gateway_json_daemon https://github.com/benjaminlei2007/myconfig_gateway_json_service/blob/main/bin/myconfig_gateway_json_daemon
+curl -L -o /data/myconfig_gateway_json/bin/myconfig_gateway_json_daemon https://raw.githubusercontent.com/benjaminlei2007/myconfig_gateway_json_service/refs/heads/main/bin/myconfig_gateway_json.service
 
 # 设置 myconfig_gateway_json 文件为 666 权限
-chmod 666 /data/myconfig_gateway_json/bin/myconfig_gateway_json
+chmod a+x /data/myconfig_gateway_json/bin/myconfig_gateway_json
+chmod a+x /data/myconfig_gateway_json/bin/myconfig_gateway_json_daemon
 
 # 下载其它必要的文件到 /data/myconfig_gateway_json 目录
 echo "Downloading keyword..."
@@ -25,7 +26,7 @@ curl -L -o /data/myconfig_gateway_json/myconfig.gateway.json https://raw.githubu
 
 # 将 myconfig_gateway_json.service 复制到 /etc/systemd/system/
 echo "Copying myconfig_gateway_json.service to /etc/systemd/system/..."
-cp /data/myconfig_gateway_json/bin/myconfig_gateway_json.service /etc/systemd/system/
+cp -f /data/myconfig_gateway_json/bin/myconfig_gateway_json.service /etc/systemd/system/
 
 # 刷新 systemd 配置
 systemctl daemon-reload
