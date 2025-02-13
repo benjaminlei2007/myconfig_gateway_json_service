@@ -11,7 +11,7 @@ echo "Downloading myconfig_gateway_json.service..."
 curl -L -o /data/myconfig_gateway_json/bin/myconfig_gateway_json.service https://raw.githubusercontent.com/benjaminlei2007/myconfig_gateway_json_service/refs/heads/main/bin/myconfig_gateway_json.service
 
 echo "Downloading myconfig_gateway_json_daemon..."
-curl -L -o /data/myconfig_gateway_json/bin/myconfig_gateway_json_daemon https://raw.githubusercontent.com/benjaminlei2007/myconfig_gateway_json_service/refs/heads/main/bin/myconfig_gateway_json.service
+curl -L -o /data/myconfig_gateway_json/bin/myconfig_gateway_json_daemon https://raw.githubusercontent.com/benjaminlei2007/myconfig_gateway_json_service/refs/heads/main/bin/myconfig_gateway_json_daemon
 
 # 设置 myconfig_gateway_json 文件为 666 权限
 chmod a+x /data/myconfig_gateway_json/bin/myconfig_gateway_json
